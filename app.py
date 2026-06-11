@@ -30,7 +30,6 @@ st.title(
 @st.cache_resource
 def load_models():
 
-```
 rf_model = joblib.load(
     "models/csv_risk_model.pkl"
 )
@@ -58,13 +57,11 @@ return (
     resnet,
     video_model
 )
-```
 
 rf_model, yolo_model, resnet, video_model = load_models()
 
 def extract_frames(video_path):
 
-```
 cap = cv2.VideoCapture(video_path)
 
 frames = []
@@ -119,11 +116,9 @@ if len(frames) != SEQUENCE_LENGTH:
     return None
 
 return np.array(frames)
-```
 
 def extract_features(frames):
 
-```
 frames = preprocess_input(frames)
 
 features = resnet.predict(
@@ -132,7 +127,6 @@ features = resnet.predict(
 )
 
 return features
-```
 
 st.header("Upload Inputs")
 
@@ -153,7 +147,7 @@ type=["mp4","avi","mov"]
 
 if st.button("Analyze"):
 
-```
+
 if csv_file is None:
 
     st.error(
@@ -360,4 +354,3 @@ except Exception as e:
     st.error(
         f"Prediction Error : {e}"
     )
-```

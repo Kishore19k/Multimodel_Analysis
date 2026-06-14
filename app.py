@@ -60,6 +60,35 @@ def load_models():
 
 rf_model, yolo_model, resnet, video_model = load_models()
 
+SIGN_EXPLANATIONS = {
+
+    "gap-in-median":
+        "There is an opening in the road divider ahead. Vehicles may cross or turn. Proceed carefully.",
+
+    "left-hand-curve":
+        "A left-hand curve is ahead. Drivers should reduce speed and maintain lane discipline.",
+
+    "right-hand-curve":
+        "A right-hand curve is ahead. Drivers should reduce speed and maintain lane discipline.",
+
+    "side-road-left":
+        "A side road joins from the left side. Watch for vehicles entering the main road."
+
+}
+
+SIGN_ACTIONS = {
+
+    "gap-in-median":
+        "Proceed cautiously and watch for turning vehicles.",
+    "left-hand-curve":
+        "Slow down and prepare for the left curve.",
+    "right-hand-curve":
+        "Slow down and prepare for the right curve.",
+    "side-road-left":
+        "Watch for vehicles entering from the left side."
+
+}
+
 def extract_frames(video_path):
 
     cap = cv2.VideoCapture(video_path)
@@ -205,15 +234,22 @@ if st.button("Analyze"):
             )
 
             sign_name = yolo_model.names[class_id]
-
+            pretty_sign_name = sign_name.replace("-", " ").title()
+            sign_explanation = SIGN_EXPLANATIONS.get(
+                sign_name,
+                "No explanation available."
+            )
+            
+            sign_action = SIGN_ACTIONS.get(
+                sign_name,
+                "No action available."
+            )
             annotated = results[0].plot()
 
         else:
 
             sign_score = 0.0
-
             sign_name = "No Sign Detected"
-
             annotated = Image.open(
                 image_path
             )
@@ -320,7 +356,13 @@ if st.button("Analyze"):
             )
 
         st.write(
-            f"Traffic Sign : {sign_name}"
+            f"Traffic Sign : {pretty_sign_name}"
+        )
+        st.info(
+            f"Meaning : {sign_explanation}"
+        )
+        st.warning(
+            f"Recommended Action : {sign_action}"
         )
 
         st.write(
